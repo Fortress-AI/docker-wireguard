@@ -37,6 +37,7 @@ PublicKey = $(cat /config/peer${i}/publickey-peer${i})
 AllowedIPs = ${INTERFACE}.$(( $i + 1 ))/32
 
 DUDE
+    echo "PUBLIC KEY: $(cat /config/peer${i}/publickey-peer${i})"
     echo "PEER ${i} QR code:"
     qrencode -t ansiutf8 < /config/peer${i}/peer${i}.conf
     qrencode -o /config/peer${i}/peer${i}.png < /config/peer${i}/peer${i}.conf
