@@ -1,1 +1,9 @@
-wg set wg0 peer $1 remove
+#!/bin/bash
+
+if [ $# -eq 0 ]
+then
+	echo "must have peer id as arg: remove-peer.sh asdf123="
+else
+	wg set wg0 peer $1 remove
+	wg show
+fi
