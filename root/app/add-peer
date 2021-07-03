@@ -19,27 +19,27 @@ for i in {1..254}; do
   if grep -q "AllowedIPs = ${INTERFACE}.$(( $i + 1 ))/32" /config/wg0.conf; then
     echo "Peer $i exists"
   else
-    echo "Adding new Peer $i"
-    mkdir -p /config/peer${i}
-    if [ ! -f /config/peer${i}/privatekey-peer${i} ]; then
+    echo "Adding new Peer $1"
+    mkdir -p /config/peer${1}
+    if [ ! -f /config/peer${1}/privatekey-peer${1} ]; then
       umask 077
-      wg genkey | tee /config/peer${i}/privatekey-peer${i} | wg pubkey > /config/peer${i}/publickey-peer${i}
+      wg genkey | tee /config/peer${1}/privatekey-peer${1} | wg pubkey > /config/peer${1}/publickey-peer${1}
     fi
     eval "`printf %s`
-    cat <<DUDE > /config/peer${i}/peer${i}.conf
+    cat <<DUDE > /config/peer${1}/peer${1}.conf
 `cat /config/templates/peer.conf`
 DUDE"
     cat <<DUDE >> /config/wg0.conf
 [Peer]
-PublicKey = $(cat /config/peer${i}/publickey-peer${i})
+PublicKey = $(cat /config/peer${1}/publickey-peer${1})
 AllowedIPs = ${INTERFACE}.$(( $i + 1 ))/32
 
 DUDE
-    echo "PUBLIC KEY: $(cat /config/peer${i}/publickey-peer${i})"
+    echo "PUBLIC KEY: $(cat /config/peer${1}/publickey-peer${1})"
     echo "PEER ${i} QR code:"
-    qrencode -t ansiutf8 < /config/peer${i}/peer${i}.conf
-    qrencode -o /config/peer${i}/peer${i}.png < /config/peer${i}/peer${i}.conf
-    chown -R abc:abc /config/peer${i}
+    qrencode -t ansiutf8 < /config/peer${1}/peer${1}.conf
+    qrencode -o /config/peer${1}/peer${1}.png < /config/peer${1}/peer${1}.conf
+    chown -R abc:abc /config/peer${1}
     s6-svc -t /var/run/s6/services/wireguard
     break
   fi
